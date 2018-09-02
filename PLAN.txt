@@ -1,0 +1,37 @@
+BRACKET BUSTER - a March Madness Breakout variant in which a player must move a platform horizontally across the bottom
+of the screen to throw/catch a basketball towards blocks in an effort to score a certain number of points within a given
+time frame. If the ball passes the bottom of the screen, a life is subtracted from the player's total number of lives.
+While the required score, allotted time, and starting number of lives remain the same throughout the levels, the block
+makeup will vary across levels to affect difficulty. This is interesting because basketball is a game that most Duke
+students (and college students in general) can easily relate to, allowing them to quickly understand the rules and
+hopefully become more excited about playing the game.
+
+Levels:
+-Sweet Sixteen
+-Elite Eight
+-Final Four
+-National Championship
+Difficulty increases as player progresses through the levels i.e. fewer 2 + 3 pointers and power ups, more fouls and
+bricks at higher levels
+
+Blocks:
+-Free throw: +1 point
+-2 pointer: +2 points
+-3 pointer: +3 points
+-Foul: -1 point
+-Brick: ball falls straight down instead of bouncing
+
+Power ups (randomly fall from a broken block):
+-And 1: +1 point
+-Rebound: +1 life
+-Steal: add time to clock
+
+Cheat keys:
+-Home court advantage: press a key to add points
+-5 star recruit: press a key to freeze/unfreeze time
+-Coach K: press a key to automatically progress to the next level
+
+Extra addition:
+Ability to play as different "positions", affecting both the size/speed of the platform and the speed of the ball. This
+is a substantial addition because it allows for greater flexibility in player strategy, thus increasing engagement and
+giving the game lasting appeal.
