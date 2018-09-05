@@ -1,13 +1,13 @@
-game
+Bracket Buster
 ====
 
 This project implements the game of Breakout.
 
-Name: 
+Name: Rohit Das
 
 ### Timeline
 
-Start Date: 
+Start Date: 9/4/2018
 
 Finish Date: 
 
