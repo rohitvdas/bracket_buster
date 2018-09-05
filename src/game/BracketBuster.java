@@ -21,7 +21,6 @@ public class BracketBuster extends Application {
     public static final double SECOND_DELAY = 1.0 / FRAMES_PER_SECOND;
     public static final String BACKGROUND_IMAGE = "cameron.jpg";
     public static final String BALL_IMAGE = "basketball.png";
-    public static final int BALL_SPEED = 30;
     public static final String PLAYER_IMAGE = "zion.jpg";
 
     private Scene myScene;
@@ -69,14 +68,18 @@ public class BracketBuster extends Application {
     }
 
     private void step(double elapsedTime) {
-        myBall.setBallX(myBall.getBallX() + BALL_SPEED * myBall.getDirectionX() * elapsedTime);
-        myBall.setBallY(myBall.getBallY() + BALL_SPEED * myBall.getDirectionY() * elapsedTime);
-        myPlayer.setX(myPlayer.getX() + BALL_SPEED * elapsedTime);
+        myBall.setBallX(myBall.getBallX() + myBall.getSpeed() * myBall.getDirectionX() * elapsedTime);
+        myBall.setBallY(myBall.getBallY() + myBall.getSpeed() * myBall.getDirectionY() * elapsedTime);
     }
 
     private void handleMouseInput(double x, double y) {
     }
 
     private void handleKeyInput(KeyCode code) {
+        if(code == KeyCode.RIGHT) {
+            myPlayer.setX(myPlayer.getX() + myPlayer.getSpeed());
+        } else if(code == KeyCode.LEFT) {
+            myPlayer.setX(myPlayer.getX() - myPlayer.getSpeed());
+        }
     }
 }
