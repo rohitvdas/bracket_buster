@@ -4,6 +4,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 public class Ball extends ImageView {
+    public static final double OFFSET = 650; //discrepancy between image position and actual position of ball in scene
+
     private double directionX;
     private double directionY;
 
@@ -11,11 +13,19 @@ public class Ball extends ImageView {
         super(image);
         this.directionX = initDirectionX;
         this.directionY = initDirectionY;
-        this.setX(startingX);
-        this.setY(startingY);
+        this.setBallX(startingX);
+        this.setBallY(startingY);
         this.setScaleX(this.getScaleX() * initSize);
         this.setScaleY(this.getScaleY() * initSize);
     }
+
+    public double getBallX() { return this.getX() + OFFSET; }
+
+    public void setBallX(double value) { this.setX(value - OFFSET); }
+
+    public double getBallY() { return this.getY() + OFFSET; }
+
+    public void setBallY(double value) { this.setY(value - OFFSET); }
 
     public double getDirectionX() { return directionX; }
 

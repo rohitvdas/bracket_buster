@@ -50,7 +50,7 @@ public class BracketBuster extends Application {
         ImagePattern bg = new ImagePattern(backgroundImage);
         var scene = new Scene(root, width, height, bg);
         var ballImage = new Image(this.getClass().getClassLoader().getResourceAsStream(BALL_IMAGE));
-        myBall = new Ball(ballImage, -650, -650, 1, 1, 0.02);
+        myBall = new Ball(ballImage, 0, 0, 1, 1, 0.02);
         root.getChildren().add(myBall);
         scene.setOnKeyPressed(e -> handleKeyInput(e.getCode()));
         scene.setOnMouseClicked(e -> handleMouseInput(e.getX(), e.getY()));
@@ -58,8 +58,8 @@ public class BracketBuster extends Application {
     }
 
     private void step(double elapsedTime) {
-        myBall.setX(myBall.getX() + BALL_SPEED * myBall.getDirectionX() * elapsedTime);
-        myBall.setY(myBall.getY() + BALL_SPEED * myBall.getDirectionY() * elapsedTime);
+        myBall.setBallX(myBall.getBallX() + BALL_SPEED * myBall.getDirectionX() * elapsedTime);
+        myBall.setBallY(myBall.getBallY() + BALL_SPEED * myBall.getDirectionY() * elapsedTime);
 
 
     }
