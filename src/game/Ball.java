@@ -4,7 +4,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 public class Ball extends ImageView {
-    private double speed = 140;
+    private double speed = 170;
     private double directionX;
     private double directionY;
 

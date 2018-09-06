@@ -50,7 +50,7 @@ public class BracketBuster extends Application {
         var scene = new Scene(root, width, height, bg);
 
         var ballImage = new Image(this.getClass().getClassLoader().getResourceAsStream(BALL_IMAGE));
-        myBall = new Ball(ballImage, 0, 0, 1, 1);
+        myBall = new Ball(ballImage, 1, 1, 1, 1);
         root.getChildren().add(myBall);
 
         var playerImage = new Image(this.getClass().getClassLoader().getResourceAsStream(PLAYER_IMAGE));
@@ -69,6 +69,15 @@ public class BracketBuster extends Application {
             myBall.setDirectionY(0);
             myBall.setX(myPlayer.getX());
         }
+
+        if(myBall.getX() <= 0 || myBall.getX() + myBall.getLayoutBounds().getWidth() >= myScene.getWidth()) {
+            myBall.setDirectionX(myBall.getDirectionX() * -1);
+        }
+
+        if(myBall.getY() <= 0) {
+            myBall.setDirectionY(myBall.getDirectionY() * -1);
+        }
+        
         myBall.setX(myBall.getX() + myBall.getSpeed() * myBall.getDirectionX() * elapsedTime);
         myBall.setY(myBall.getY() + myBall.getSpeed() * myBall.getDirectionY() * elapsedTime);
     }
