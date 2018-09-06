@@ -4,7 +4,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 public class Ball extends ImageView {
-    private double speed = 70;
+    private double speed = 140;
     private double directionX;
     private double directionY;
 
@@ -22,9 +22,9 @@ public class Ball extends ImageView {
 
     public double getDirectionX() { return directionX; }
 
-    public void setDirectionX(int newDirectionX) { directionX = newDirectionX; }
+    public void setDirectionX(double newDirectionX) { directionX = newDirectionX; }
 
     public double getDirectionY() { return directionY; }
 
-    public void setDirectionY(int newDirectionY) { directionY = newDirectionY; }
+    public void setDirectionY(double newDirectionY) { directionY = newDirectionY; }
 }

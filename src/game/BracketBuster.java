@@ -76,7 +76,15 @@ public class BracketBuster extends Application {
         myBall.setY(myBall.getY() + myBall.getSpeed() * myBall.getDirectionY() * elapsedTime);
     }
 
-    private void handleMouseInput(double x, double y) {
+    private void handleMouseInput(double mouseX, double mouseY) {
+        if(myBall.getBoundsInParent().intersects(myPlayer.getBoundsInParent())) {
+            double xVector = mouseX - myBall.getX();
+            double yVector = mouseY - myBall.getY();
+            double magnitude = Math.sqrt(xVector*xVector + yVector*yVector);
+            myBall.setY(myBall.getY() - 10);
+            myBall.setDirectionX(xVector / magnitude);
+            myBall.setDirectionY(yVector / magnitude);
+        }
     }
 
     private void handleKeyInput(KeyCode code) {
