@@ -10,6 +10,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.ImagePattern;
+import javafx.scene.shape.Shape;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -26,8 +27,6 @@ public class BracketBuster extends Application {
     private Scene myScene;
     private Ball myBall;
     private Player myPlayer;
-    
-    
 
     public static void main(String[] args) {
         launch(args);
@@ -54,13 +53,13 @@ public class BracketBuster extends Application {
         var scene = new Scene(root, width, height, bg);
 
         var ballImage = new Image(this.getClass().getClassLoader().getResourceAsStream(BALL_IMAGE));
-        myBall = new Ball(ballImage, 0, 0, 1, 1, 0.02);
+        myBall = new Ball(ballImage, 0, 0, 1, 1);
         root.getChildren().add(myBall);
 
         var playerImage = new Image(this.getClass().getClassLoader().getResourceAsStream(PLAYER_IMAGE));
         myPlayer = new Player(playerImage);
         root.getChildren().add(myPlayer);
-        root.setBottomAnchor(myPlayer, -90.0);
+        root.setBottomAnchor(myPlayer, 0.0);
 
         scene.setOnKeyPressed(e -> handleKeyInput(e.getCode()));
         scene.setOnMouseClicked(e -> handleMouseInput(e.getX(), e.getY()));
@@ -68,8 +67,13 @@ public class BracketBuster extends Application {
     }
 
     private void step(double elapsedTime) {
-        myBall.setBallX(myBall.getBallX() + myBall.getSpeed() * myBall.getDirectionX() * elapsedTime);
-        myBall.setBallY(myBall.getBallY() + myBall.getSpeed() * myBall.getDirectionY() * elapsedTime);
+        if(myBall.getBoundsInParent().intersects(myPlayer.getBoundsInParent())) {
+            myBall.setDirectionX(0);
+            myBall.setDirectionY(0);
+            myBall.setX(myPlayer.getX());
+        }
+        myBall.setX(myBall.getX() + myBall.getSpeed() * myBall.getDirectionX() * elapsedTime);
+        myBall.setY(myBall.getY() + myBall.getSpeed() * myBall.getDirectionY() * elapsedTime);
     }
 
     private void handleMouseInput(double x, double y) {
