@@ -3,14 +3,11 @@ package game;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.ImagePattern;
-import javafx.scene.shape.Shape;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -81,16 +78,16 @@ public class BracketBuster extends Application {
             double xVector = mouseX - myBall.getX();
             double yVector = mouseY - myBall.getY();
             double magnitude = Math.sqrt(xVector*xVector + yVector*yVector);
-            myBall.setY(myBall.getY() - 10);
+            myBall.setY(myBall.getY() - 5);
             myBall.setDirectionX(xVector / magnitude);
             myBall.setDirectionY(yVector / magnitude);
         }
     }
 
     private void handleKeyInput(KeyCode code) {
-        if(code == KeyCode.RIGHT) {
+        if(code == KeyCode.RIGHT && myPlayer.getX() + myPlayer.getLayoutBounds().getWidth() < myScene.getWidth()) {
             myPlayer.setX(myPlayer.getX() + myPlayer.getSpeed());
-        } else if(code == KeyCode.LEFT) {
+        } else if(code == KeyCode.LEFT && myPlayer.getX() > 0) {
             myPlayer.setX(myPlayer.getX() - myPlayer.getSpeed());
         }
     }
