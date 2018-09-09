@@ -12,6 +12,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.ImagePattern;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+
 import java.util.ArrayList;
 
 public class BracketBuster extends Application {
@@ -31,6 +32,7 @@ public class BracketBuster extends Application {
     private ArrayList<ArrayList<Block>> blockGrid;
     private GameManager myGameManager;
     private StatDisplay myStats;
+    private ArrayList<PowerUp> activePowerUps;
 
     public static void main(String[] args) {
         launch(args);
@@ -70,12 +72,9 @@ public class BracketBuster extends Application {
         myBall = new Ball(ballImage, 50, 50);
         root.getChildren().add(myBall);
 
-        blockGrid = new ArrayList<>();
-        blockGrid.add(new ArrayList<>());
-        blockGrid.add(new ArrayList<>());
-        blockGrid.add(new ArrayList<>());
-
         this.renderBlocks(root, scene);
+
+        activePowerUps = new ArrayList<>();
 
         myGameManager = new GameManager();
 
@@ -85,7 +84,7 @@ public class BracketBuster extends Application {
     }
 
     private void step(double elapsedTime) {
-       if (myBall.getBoundsInParent().intersects(myPlayer.getBoundsInParent())) {
+        if (myBall.getBoundsInParent().intersects(myPlayer.getBoundsInParent())) {
             myBall.setDirectionX(0);
             myBall.setDirectionY(0);
             myBall.setX(myPlayer.getX());
@@ -99,8 +98,8 @@ public class BracketBuster extends Application {
             myBall.setDirectionY(myBall.getDirectionY() * -1);
         }
 
-        if(myBall.getY() >= myScene.getHeight()) {
-            myStats.updateLives(myGameManager.decrementLives());
+        if (myBall.getY() >= myScene.getHeight()) {
+            myGameManager.setLives(-1);
             myBall.resetBall();
         }
 
@@ -109,27 +108,47 @@ public class BracketBuster extends Application {
         myBall.setX(myBall.getX() + myBall.getSpeed() * myBall.getDirectionX() * elapsedTime);
         myBall.setY(myBall.getY() + myBall.getSpeed() * myBall.getDirectionY() * elapsedTime);
 
-        if(!myGameManager.isFrozen()) {
+        for (int i = 0; i < activePowerUps.size(); i++) {
+            PowerUp currentPowerUp = activePowerUps.get(i);
+            if (currentPowerUp != null) {
+                currentPowerUp.setY(currentPowerUp.getY() + currentPowerUp.getSpeed() * elapsedTime);
+                if(currentPowerUp.getY() >= myScene.getHeight()) {
+                    activePowerUps.set(i, null);
+                    root.getChildren().remove(currentPowerUp);
+                }
+            }
+        }
+
+        this.handlePowerUpCapture();
+
+        if (!myGameManager.isFrozen()) {
             myStats.updateTime(myGameManager.getTimeLeft(), myGameManager.decrementTimer());
         }
+
         myStats.updateScore(myGameManager.getScore());
+        myStats.updateLives(myGameManager.getLivesLeft());
     }
 
     private void renderBlocks(AnchorPane root, Scene scene) {
+        blockGrid = new ArrayList<>();
+        blockGrid.add(new ArrayList<>());
+        blockGrid.add(new ArrayList<>());
+        blockGrid.add(new ArrayList<>());
+
         int end = (int) Math.floor(scene.getWidth());
         for (int i = 0; i < end; i += end / 10) {
             var threeBlockImage = new Image(this.getClass().getClassLoader().getResourceAsStream("three.PNG"));
-            Block threeBlock = new Block(threeBlockImage, 70, 70, i, 0,3, false);
+            Block threeBlock = new Block(threeBlockImage, 70, 70, i, 0, 3, false, false);
             root.getChildren().add(threeBlock);
             blockGrid.get(0).add(threeBlock);
 
             var twoBlockImage = new Image(this.getClass().getClassLoader().getResourceAsStream("two.PNG"));
-            Block twoBlock = new Block(twoBlockImage, 70, 70, i, 70,2, false);
+            Block twoBlock = new Block(twoBlockImage, 70, 70, i, 70, 2, false, false);
             root.getChildren().add(twoBlock);
             blockGrid.get(1).add(twoBlock);
 
             var oneBlockImage = new Image(this.getClass().getClassLoader().getResourceAsStream("one.PNG"));
-            Block oneBlock = new Block(oneBlockImage, 70, 70, i, 140,1, false);
+            Block oneBlock = new Block(oneBlockImage, 70, 70, i, 140, 1, false, true);
             root.getChildren().add(oneBlock);
             blockGrid.get(2).add(oneBlock);
         }
@@ -153,11 +172,11 @@ public class BracketBuster extends Application {
         if (code == KeyCode.LEFT && myPlayer.getX() > 0) {
             myPlayer.setX(myPlayer.getX() - myPlayer.getSpeed());
         }
-        if(code == KeyCode.H) {
+        if (code == KeyCode.H) {
             myGameManager.setScore(1);
         }
-        if(code == KeyCode.DIGIT5) {
-            if(!myGameManager.isFrozen()) {
+        if (code == KeyCode.DIGIT5) {
+            if (!myGameManager.isFrozen()) {
                 myGameManager.freezeTime();
             } else {
                 myGameManager.unfreezeTime();
@@ -169,8 +188,8 @@ public class BracketBuster extends Application {
         for (int i = 0; i < blockGrid.size(); i++) {
             for (int j = 0; j < blockGrid.get(0).size(); j++) {
                 Block currentBlock = blockGrid.get(i).get(j);
-                if(currentBlock != null && myBall.getBoundsInParent().intersects(currentBlock.getBoundsInParent())) {
-                    if(currentBlock.isBrick()) {
+                if (currentBlock != null && myBall.getBoundsInParent().intersects(currentBlock.getBoundsInParent())) {
+                    if (currentBlock.isBrick()) {
                         myBall.setDirectionX(0);
                         myBall.setDirectionY(1);
                     } else if (myBall.getX() + myBall.getLayoutBounds().getWidth() >= currentBlock.getX() ||
@@ -181,10 +200,35 @@ public class BracketBuster extends Application {
                             myBall.getY() <= currentBlock.getY() + currentBlock.getLayoutBounds().getHeight()) {
                         myBall.setDirectionY(myBall.getDirectionY() * -1);
                     }
+                    if (currentBlock.containsPowerUp()) {
+                        this.dropPowerUp(currentBlock.getX(), currentBlock.getY());
+                    }
                     blockGrid.get(i).set(j, null);
                     root.getChildren().remove(currentBlock);
                     myGameManager.setScore(currentBlock.getValue());
                 }
+            }
+        }
+    }
+
+    private void dropPowerUp(double x, double y) {
+        var powerUpImage = new Image(this.getClass().getClassLoader().getResourceAsStream("and1.jpg"));
+        PowerUp powerUp = new PowerUp(powerUpImage, 50, 50, 1, 0, 0);
+        powerUp.setX(x);
+        powerUp.setY(y);
+        root.getChildren().add(powerUp);
+        activePowerUps.add(powerUp);
+    }
+
+    private void handlePowerUpCapture() {
+        for (int i = 0; i < activePowerUps.size(); i++) {
+            PowerUp currentPowerUp = activePowerUps.get(i);
+            if (currentPowerUp != null && myPlayer.getBoundsInParent().intersects(currentPowerUp.getBoundsInParent())) {
+                activePowerUps.set(i, null);
+                root.getChildren().remove(currentPowerUp);
+                myGameManager.setScore(currentPowerUp.addPoints());
+                myGameManager.setLives(currentPowerUp.addLives());
+                myGameManager.incrementTimer(currentPowerUp.addTime());
             }
         }
     }

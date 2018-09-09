@@ -23,6 +23,10 @@ public class GameManager {
         return timeLeft -= SECOND_DELAY;
     }
 
+    public void incrementTimer(int addTime) {
+        timeLeft += addTime;
+    }
+
     public int getScore() {
         return score;
     }
@@ -35,8 +39,8 @@ public class GameManager {
         return numLives;
     }
 
-    public int decrementLives() {
-        return --numLives;
+    public void setLives(int addLives) {
+        numLives += addLives;
     }
 
     public boolean isFrozen() {
