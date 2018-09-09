@@ -4,13 +4,15 @@ import static game.BracketBuster.SECOND_DELAY;
 
 public class GameManager {
     private int level;
-    private int score;
-    private double timeLeft;
-    private int numLives;
     private Player myPlayer;
+    private double timeLeft;
+    private int score;
+    private int numLives;
+    private boolean frozen = false;
 
     GameManager() {
         timeLeft = 60;
+        numLives = 3;
     }
 
     public double getTimeLeft() {
@@ -19,5 +21,33 @@ public class GameManager {
 
     public double decrementTimer() {
         return timeLeft -= SECOND_DELAY;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int points) {
+        score += points;
+    }
+
+    public int getLivesLeft() {
+        return numLives;
+    }
+
+    public int decrementLives() {
+        return --numLives;
+    }
+
+    public boolean isFrozen() {
+        return frozen;
+    }
+
+    public void freezeTime() {
+        frozen = true;
+    }
+
+    public void unfreezeTime() {
+        frozen = false;
     }
 }

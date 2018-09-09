@@ -18,10 +18,10 @@ public class StatDisplay extends AnchorPane {
         topLeft = new Text(0, 0, "");
         topLeft.setFont(Font.font("Garamond", 20));
         topLeft.setFill(Color.WHITE);
-        bottomLeft = new Text(0, 0, "Lives: ");
+        bottomLeft = new Text(0, 0, "Lives: 3");
         bottomLeft.setFont(Font.font("Garamond", 20));
         bottomLeft.setFill(Color.WHITE);
-        topRight = new Text(0, 0, "Time: ");
+        topRight = new Text(0, 0, "Time: 60");
         topRight.setFont(Font.font("Garamond", 20));
         topRight.setFill(Color.WHITE);
         bottomRight = new Text(0, 0, "Score: ");

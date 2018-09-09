@@ -7,15 +7,23 @@ public class Ball extends ImageView {
     private double speed = 170;
     private double directionX;
     private double directionY;
+    private double startingX = 350;
+    private double startingY = 350;
+    private double initDirectionX = -1;
+    private double initDirectionY = 1;
 
-    Ball(Image image, int width, int height, double startingX, double startingY, double initDirectionX, double initDirectionY) {
+    Ball(Image image, int width, int height) {
         super(image);
+        this.setFitWidth(width);
+        this.setFitHeight(height);
+        resetBall();
+    }
+
+    public void resetBall() {
         this.directionX = initDirectionX;
         this.directionY = initDirectionY;
         this.setX(startingX);
         this.setY(startingY);
-        this.setFitWidth(width);
-        this.setFitHeight(height);
     }
 
     public double getSpeed() { return speed; }

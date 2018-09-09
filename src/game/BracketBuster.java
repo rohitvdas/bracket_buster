@@ -67,7 +67,7 @@ public class BracketBuster extends Application {
         root.setBottomAnchor(myStats, 0.0);
 
         var ballImage = new Image(this.getClass().getClassLoader().getResourceAsStream(BALL_IMAGE));
-        myBall = new Ball(ballImage, 50, 50, 350, 350, -1, 1);
+        myBall = new Ball(ballImage, 50, 50);
         root.getChildren().add(myBall);
 
         blockGrid = new ArrayList<>();
@@ -99,29 +99,37 @@ public class BracketBuster extends Application {
             myBall.setDirectionY(myBall.getDirectionY() * -1);
         }
 
+        if(myBall.getY() >= myScene.getHeight()) {
+            myStats.updateLives(myGameManager.decrementLives());
+            myBall.resetBall();
+        }
+
         this.handleBlockCollision();
 
         myBall.setX(myBall.getX() + myBall.getSpeed() * myBall.getDirectionX() * elapsedTime);
         myBall.setY(myBall.getY() + myBall.getSpeed() * myBall.getDirectionY() * elapsedTime);
 
-        myStats.updateTime(myGameManager.getTimeLeft(), myGameManager.decrementTimer());
+        if(!myGameManager.isFrozen()) {
+            myStats.updateTime(myGameManager.getTimeLeft(), myGameManager.decrementTimer());
+        }
+        myStats.updateScore(myGameManager.getScore());
     }
 
     private void renderBlocks(AnchorPane root, Scene scene) {
         int end = (int) Math.floor(scene.getWidth());
         for (int i = 0; i < end; i += end / 10) {
             var threeBlockImage = new Image(this.getClass().getClassLoader().getResourceAsStream("three.PNG"));
-            Block threeBlock = new Block(threeBlockImage, 70, 70, i, 0);
+            Block threeBlock = new Block(threeBlockImage, 70, 70, i, 0,3);
             root.getChildren().add(threeBlock);
             blockGrid.get(0).add(threeBlock);
 
             var twoBlockImage = new Image(this.getClass().getClassLoader().getResourceAsStream("two.PNG"));
-            Block twoBlock = new Block(twoBlockImage, 70, 70, i, 70);
+            Block twoBlock = new Block(twoBlockImage, 70, 70, i, 70,2);
             root.getChildren().add(twoBlock);
             blockGrid.get(1).add(twoBlock);
 
             var oneBlockImage = new Image(this.getClass().getClassLoader().getResourceAsStream("one.PNG"));
-            Block oneBlock = new Block(oneBlockImage, 70, 70, i, 140);
+            Block oneBlock = new Block(oneBlockImage, 70, 70, i, 140,1);
             root.getChildren().add(oneBlock);
             blockGrid.get(2).add(oneBlock);
         }
@@ -141,8 +149,19 @@ public class BracketBuster extends Application {
     private void handleKeyInput(KeyCode code) {
         if (code == KeyCode.RIGHT && myPlayer.getX() + myPlayer.getLayoutBounds().getWidth() < myScene.getWidth()) {
             myPlayer.setX(myPlayer.getX() + myPlayer.getSpeed());
-        } else if (code == KeyCode.LEFT && myPlayer.getX() > 0) {
+        }
+        if (code == KeyCode.LEFT && myPlayer.getX() > 0) {
             myPlayer.setX(myPlayer.getX() - myPlayer.getSpeed());
+        }
+        if(code == KeyCode.H) {
+            myGameManager.setScore(1);
+        }
+        if(code == KeyCode.DIGIT5) {
+            if(!myGameManager.isFrozen()) {
+                myGameManager.freezeTime();
+            } else {
+                myGameManager.unfreezeTime();
+            }
         }
     }
 
@@ -155,16 +174,15 @@ public class BracketBuster extends Application {
                             myBall.getX() <= currentBlock.getX() + currentBlock.getLayoutBounds().getWidth()) {
                         myBall.setDirectionX(myBall.getDirectionX() * -1);
                         myBall.setDirectionY(-1);
-                        blockGrid.get(i).set(j, null);
-                        root.getChildren().remove(currentBlock);
                     }
 
                     if (myBall.getY() + myBall.getLayoutBounds().getHeight() >= currentBlock.getY() ||
                             myBall.getY() <= currentBlock.getY() + currentBlock.getLayoutBounds().getHeight()) {
                         myBall.setDirectionY(myBall.getDirectionY() * -1);
-                        blockGrid.get(i).set(j, null);
-                        root.getChildren().remove(currentBlock);
                     }
+                    blockGrid.get(i).set(j, null);
+                    root.getChildren().remove(currentBlock);
+                    myGameManager.setScore(currentBlock.getValue());
                 }
             }
         }
