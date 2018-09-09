@@ -8,14 +8,14 @@ public class Ball extends ImageView {
     private double directionX;
     private double directionY;
 
-    Ball(Image image, double startingX, double startingY, double initDirectionX, double initDirectionY) {
+    Ball(Image image, int width, int height, double startingX, double startingY, double initDirectionX, double initDirectionY) {
         super(image);
         this.directionX = initDirectionX;
         this.directionY = initDirectionY;
         this.setX(startingX);
         this.setY(startingY);
-        this.setFitWidth(50);
-        this.setFitHeight(50);
+        this.setFitWidth(width);
+        this.setFitHeight(height);
     }
 
     public double getSpeed() { return speed; }
