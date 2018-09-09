@@ -26,7 +26,9 @@ Key/Mouse inputs:
 
 Cheat keys:
 
-Known Bugs:
+Known Bugs: 
+-When player is at left-most position on screen, ball can only be shot straight up
+-If ball isn't caught by top of player, it takes multiple mouse clicks to shoot ball again
 
 Extra credit:
 

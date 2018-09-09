@@ -119,17 +119,17 @@ public class BracketBuster extends Application {
         int end = (int) Math.floor(scene.getWidth());
         for (int i = 0; i < end; i += end / 10) {
             var threeBlockImage = new Image(this.getClass().getClassLoader().getResourceAsStream("three.PNG"));
-            Block threeBlock = new Block(threeBlockImage, 70, 70, i, 0,3);
+            Block threeBlock = new Block(threeBlockImage, 70, 70, i, 0,3, false);
             root.getChildren().add(threeBlock);
             blockGrid.get(0).add(threeBlock);
 
             var twoBlockImage = new Image(this.getClass().getClassLoader().getResourceAsStream("two.PNG"));
-            Block twoBlock = new Block(twoBlockImage, 70, 70, i, 70,2);
+            Block twoBlock = new Block(twoBlockImage, 70, 70, i, 70,2, false);
             root.getChildren().add(twoBlock);
             blockGrid.get(1).add(twoBlock);
 
             var oneBlockImage = new Image(this.getClass().getClassLoader().getResourceAsStream("one.PNG"));
-            Block oneBlock = new Block(oneBlockImage, 70, 70, i, 140,1);
+            Block oneBlock = new Block(oneBlockImage, 70, 70, i, 140,1, false);
             root.getChildren().add(oneBlock);
             blockGrid.get(2).add(oneBlock);
         }
@@ -170,13 +170,14 @@ public class BracketBuster extends Application {
             for (int j = 0; j < blockGrid.get(0).size(); j++) {
                 Block currentBlock = blockGrid.get(i).get(j);
                 if(currentBlock != null && myBall.getBoundsInParent().intersects(currentBlock.getBoundsInParent())) {
-                    if (myBall.getX() + myBall.getLayoutBounds().getWidth() >= currentBlock.getX() ||
+                    if(currentBlock.isBrick()) {
+                        myBall.setDirectionX(0);
+                        myBall.setDirectionY(1);
+                    } else if (myBall.getX() + myBall.getLayoutBounds().getWidth() >= currentBlock.getX() ||
                             myBall.getX() <= currentBlock.getX() + currentBlock.getLayoutBounds().getWidth()) {
                         myBall.setDirectionX(myBall.getDirectionX() * -1);
-                        myBall.setDirectionY(-1);
-                    }
-
-                    if (myBall.getY() + myBall.getLayoutBounds().getHeight() >= currentBlock.getY() ||
+                        myBall.setDirectionY(1);
+                    } else if (myBall.getY() + myBall.getLayoutBounds().getHeight() >= currentBlock.getY() ||
                             myBall.getY() <= currentBlock.getY() + currentBlock.getLayoutBounds().getHeight()) {
                         myBall.setDirectionY(myBall.getDirectionY() * -1);
                     }
