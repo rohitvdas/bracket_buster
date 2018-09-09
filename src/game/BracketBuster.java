@@ -3,6 +3,8 @@ package game;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
@@ -28,6 +30,7 @@ public class BracketBuster extends Application {
     private Player myPlayer;
     private ArrayList<ArrayList<Block>> blockGrid;
     private GameManager myGameManager;
+    private StatDisplay myStats;
 
     public static void main(String[] args) {
         launch(args);
@@ -44,7 +47,7 @@ public class BracketBuster extends Application {
         var animation = new Timeline();
         animation.setCycleCount(Timeline.INDEFINITE);
         animation.getKeyFrames().add(frame);
-        animation.play();
+        animation.playFromStart();
 
     }
 
@@ -57,7 +60,11 @@ public class BracketBuster extends Application {
         var playerImage = new Image(this.getClass().getClassLoader().getResourceAsStream(PLAYER_IMAGE));
         myPlayer = new Player(playerImage, 70, 100);
         root.getChildren().add(myPlayer);
-        root.setBottomAnchor(myPlayer, 0.0);
+        root.setBottomAnchor(myPlayer, 70.0);
+
+        myStats = new StatDisplay(scene.getWidth(), 70.0);
+        root.getChildren().add(myStats);
+        root.setBottomAnchor(myStats, 0.0);
 
         var ballImage = new Image(this.getClass().getClassLoader().getResourceAsStream(BALL_IMAGE));
         myBall = new Ball(ballImage, 50, 50, 350, 350, -1, 1);
@@ -96,6 +103,8 @@ public class BracketBuster extends Application {
 
         myBall.setX(myBall.getX() + myBall.getSpeed() * myBall.getDirectionX() * elapsedTime);
         myBall.setY(myBall.getY() + myBall.getSpeed() * myBall.getDirectionY() * elapsedTime);
+
+        myStats.updateTime(myGameManager.getTimeLeft(), myGameManager.decrementTimer());
     }
 
     private void renderBlocks(AnchorPane root, Scene scene) {

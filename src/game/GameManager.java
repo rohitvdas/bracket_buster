@@ -1,24 +1,23 @@
 package game;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import static game.BracketBuster.SECOND_DELAY;
 
 public class GameManager {
     private int level;
     private int score;
-    private Timer clock;
+    private double timeLeft;
     private int numLives;
+    private Player myPlayer;
 
     GameManager() {
-        clock = new Timer();
-        clock.scheduleAtFixedRate(new TimerTask() {
-            int i = 60;
-            public void run() {
-                System.out.println(i--);
-                if(i < 0) {
-                    clock.cancel();
-                }
-            }
-        }, 0, 1000);
+        timeLeft = 60;
+    }
+
+    public double getTimeLeft() {
+        return timeLeft;
+    }
+
+    public double decrementTimer() {
+        return timeLeft -= SECOND_DELAY;
     }
 }
