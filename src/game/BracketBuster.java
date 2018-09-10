@@ -58,30 +58,10 @@ public class BracketBuster extends Application {
     }
 
     private void createLevelList(ArrayList<Level> list) {
-        list.add(createSweetSixteen());
-        list.add(createEliteEight());
-        list.add(createFinalFour());
-        list.add(createNationalChampionship());
-    }
-
-    private Level createSweetSixteen() {
-        Level sweetSixteen = new Level("Sweet Sixteen");
-        return sweetSixteen;
-    }
-
-    private Level createEliteEight() {
-        Level eliteEight = new Level("Elite Eight");
-        return eliteEight;
-    }
-
-    private Level createFinalFour() {
-        Level finalFour = new Level("Final Four");
-        return finalFour;
-    }
-
-    private Level createNationalChampionship() {
-        Level nationalChampionship = new Level("National Championship");
-        return nationalChampionship;
+        list.add(new Level("Sweet Sixteen", 10, 40));
+        list.add(new Level("Elite Eight", 20, 30));
+        list.add(new Level("Final Four", 30, 20));
+        list.add(new Level("National Championship", 40, 10));
     }
 
     private Scene setupSplashScreen() {

@@ -4,26 +4,44 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
-
 import java.util.ArrayList;
+import java.util.Random;
+
+
+import static game.Block.BLOCK_SIZE;
 import static game.BracketBuster.SIZE;
 
 public class Level extends AnchorPane {
     public static final int TARGET_SCORE = 21;
     public static final double HEIGHT = 70.0;
+    public static final int NUM_BLOCK_ROWS = 3;
 
     private String levelName;
     private ArrayList<ArrayList<Block>> myBlockGrid;
+    private int currentPositiveBlock;
+    private boolean isBrickBlock;
+    private int negativeBlockProbability; //out of 100
+    private int currentPowerUp;
+    private int powerUpProbability; //out of 100
     private GameManager myGameManager;
     private StatDisplay myStats;
     private boolean isCompleted;
     private boolean isOver;
 
-    Level(String name) {
+    Level(String name, int negativeBlockProb, int powerUpProb) {
         super();
         levelName = name;
         myBlockGrid = new ArrayList<>();
         myGameManager = new GameManager();
+
+        currentPositiveBlock = 1;
+
+        negativeBlockProbability = negativeBlockProb;
+        isBrickBlock = false;
+
+        powerUpProbability = powerUpProb;
+        currentPowerUp = 1;
+
         myStats = new StatDisplay(SIZE, HEIGHT, levelName);
         isCompleted = false;
         isOver = false;
@@ -69,26 +87,44 @@ public class Level extends AnchorPane {
     }
 
     public void renderBlocks(Scene myScene) {
-        myBlockGrid.add(new ArrayList<>());
-        myBlockGrid.add(new ArrayList<>());
-        myBlockGrid.add(new ArrayList<>());
-
-        int end = (int) Math.floor(myScene.getWidth());
-        for (int i = 0; i < end; i += end / 10) {
-            var threeBlockImage = new Image(this.getClass().getClassLoader().getResourceAsStream("three.PNG"));
-            Block threeBlock = new Block(threeBlockImage, i, 0, 3, false, false);
-            this.getChildren().add(threeBlock);
-            myBlockGrid.get(0).add(threeBlock);
-
-            var twoBlockImage = new Image(this.getClass().getClassLoader().getResourceAsStream("two.PNG"));
-            Block twoBlock = new Block(twoBlockImage, i, 70, 2, false, false);
-            this.getChildren().add(twoBlock);
-            myBlockGrid.get(1).add(twoBlock);
-
-            var oneBlockImage = new Image(this.getClass().getClassLoader().getResourceAsStream("one.PNG"));
-            Block oneBlock = new Block(oneBlockImage, i, 140, 1, false, true);
-            this.getChildren().add(oneBlock);
-            myBlockGrid.get(2).add(oneBlock);
+        for(int i = 0; i < NUM_BLOCK_ROWS; i++) {
+            myBlockGrid.add(new ArrayList<>());
+            int end = (int) Math.floor(myScene.getWidth());
+            for(int j = 0; j < end; j += BLOCK_SIZE) {
+                Random rand = new Random();
+                int n = rand.nextInt(100) + 1;
+                boolean isNegativeBlock = n < negativeBlockProbability;
+                Block blockToAdd;
+                if(isNegativeBlock) {
+                    if(isBrickBlock) {
+                        blockToAdd = new Block(new Image(this.getClass().getClassLoader().getResourceAsStream("brick.png")),
+                                0, true);
+                    } else {
+                        blockToAdd = new Block(new Image(this.getClass().getClassLoader().getResourceAsStream("foul.PNG")),
+                                -1, false);
+                    }
+                    isBrickBlock = !isBrickBlock;
+                } else {
+                    if(currentPositiveBlock == 1) {
+                        blockToAdd = new Block(new Image(this.getClass().getClassLoader().getResourceAsStream("one.PNG")),
+                                1, false);
+                        currentPositiveBlock++;
+                    } else if(currentPositiveBlock == 2){
+                        blockToAdd = new Block(new Image(this.getClass().getClassLoader().getResourceAsStream("two.PNG")),
+                                2, false);
+                        currentPositiveBlock++;
+                    } else {
+                        blockToAdd = new Block(new Image(this.getClass().getClassLoader().getResourceAsStream("three.PNG")),
+                                3, false);
+                        currentPositiveBlock = 1;
+                    }
+                }
+                blockToAdd.setX(j);
+                blockToAdd.setY(HEIGHT * i);
+                blockToAdd.setPowerUp(powerUpProbability);
+                this.getChildren().add(blockToAdd);
+                myBlockGrid.get(i).add(blockToAdd);
+            }
         }
     }
 
@@ -153,8 +189,20 @@ public class Level extends AnchorPane {
     }
 
     private void dropPowerUp(double x, double y, ArrayList<PowerUp> myActivePowerUps) {
-        var powerUpImage = new Image(this.getClass().getClassLoader().getResourceAsStream("and1.jpg"));
-        PowerUp powerUp = new PowerUp(powerUpImage,1, 0, 0);
+        PowerUp powerUp;
+        if(currentPowerUp == 1) {
+            powerUp = new PowerUp(new Image(this.getClass().getClassLoader().getResourceAsStream("and1.jpg")),
+                    1,0,0);
+            currentPowerUp++;
+        } else if(currentPowerUp == 2){
+            powerUp = new PowerUp(new Image(this.getClass().getClassLoader().getResourceAsStream("zion.jpg")),
+                    0,1,0); //change to selected player
+            currentPowerUp++;
+        } else {
+            powerUp = new PowerUp(new Image(this.getClass().getClassLoader().getResourceAsStream("clock.png")),
+                    0,0,5);
+            currentPowerUp = 1;
+        }
         powerUp.setX(x);
         powerUp.setY(y);
         this.getChildren().add(powerUp);
