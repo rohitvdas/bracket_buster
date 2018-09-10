@@ -5,6 +5,7 @@ import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
@@ -230,14 +231,24 @@ public class BracketBuster extends Application {
     }
 
     private void endGame() {
+        Group endScreen = new Group();
+        String backgroundColor;
+        Text displayText;
         if(isGameWon) {
-            AnchorPane winningScreen = new AnchorPane();
-            myScene = new Scene(winningScreen, SIZE, SIZE, Paint.valueOf("WHITE"));
+            backgroundColor = "WHITE";
+            displayText = new Text(0, 0, "CONGRATULATIONS,\n" + "YOU'RE A NATIONAL\n" + "CHAMPION!");
+            displayText.setFill(Color.BLUE);
         } else {
-            AnchorPane losingScreen = new AnchorPane();
-            myScene = new Scene(losingScreen, SIZE, SIZE, Paint.valueOf("BLACK"));
+            backgroundColor = "BLACK";
+            displayText = new Text(0, 0, "GAME OVER!\n" + "MAYBE NEXT YEAR...");
+            displayText.setFill(Color.WHITE);
         }
+        displayText.setFont(Font.font("Garamond", 50));
+        endScreen.getChildren().add(displayText);
+        displayText.setX(30);
+        displayText.setY(300);
+
+        myScene = new Scene(endScreen, SIZE, SIZE, Paint.valueOf(backgroundColor));
         stage.setScene(myScene);
-        //add play again button and write handler method to restart animation
     }
 }
