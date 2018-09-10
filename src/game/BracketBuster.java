@@ -3,14 +3,17 @@ package game;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.paint.Paint;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
 import java.util.ArrayList;
 
 public class BracketBuster extends Application {
@@ -28,6 +31,7 @@ public class BracketBuster extends Application {
     private Timeline animation;
     private Ball myBall;
     private Player myPlayer;
+    private ArrayList<Player> playerList;
     private ArrayList<Level> levelList;
     private int currentLevel = 0;
     private ArrayList<PowerUp> activePowerUps;
@@ -41,8 +45,10 @@ public class BracketBuster extends Application {
     @Override
     public void start(Stage primaryStage) {
         levelList = new ArrayList<>();
-        isGameWon = false;
         createLevelList(levelList);
+        playerList = new ArrayList<>();
+        createPlayerList(playerList);
+        isGameWon = false;
         stage = primaryStage;
         myScene = setupSplashScreen();
         stage.setScene(myScene);
@@ -64,12 +70,60 @@ public class BracketBuster extends Application {
         list.add(new Level("National Championship", 40, 10));
     }
 
+    private void createPlayerList(ArrayList<Player> list) {
+        var zionImage = new Image(this.getClass().getClassLoader().getResourceAsStream("zion.jpg"));
+        list.add(new Player(zionImage, 70, 100, 30));
+        var treImage = new Image(this.getClass().getClassLoader().getResourceAsStream("tre.jpg"));
+        list.add(new Player(treImage, 60, 90, 40));
+        var marquesImage = new Image(this.getClass().getClassLoader().getResourceAsStream("marques.jpg"));
+        list.add(new Player(marquesImage, 80, 110, 20));
+    }
+
     private Scene setupSplashScreen() {
-        AnchorPane splashScreen = new AnchorPane();
+        Group splashScreen = new Group();
         var scene = new Scene(splashScreen, SIZE, SIZE, Paint.valueOf("BLUE"));
 
-        var playerImage = new Image(this.getClass().getClassLoader().getResourceAsStream("zion.jpg"));
-        myPlayer = new Player(playerImage, 70, 100, 30);
+        Text title = new Text(0, 0, "BRACKET BUSTER");
+        title.setFont(Font.font("Garamond", 70));
+        title.setFill(Color.WHITE);
+        splashScreen.getChildren().add(title);
+        title.setX(50);
+        title.setY(100);
+
+        Text playerSelectionLabel = new Text(0,0,"Choose your player:");
+        playerSelectionLabel.setFont(Font.font("Garamond", 50));
+        playerSelectionLabel.setFill(Color.WHITE);
+        splashScreen.getChildren().add(playerSelectionLabel);
+        playerSelectionLabel.setX(150);
+        playerSelectionLabel.setY(200);
+
+        for(int i = 0; i < playerList.size(); i++) {
+            Player currentPlayer = playerList.get(i);
+            splashScreen.getChildren().add(currentPlayer);
+            currentPlayer.setX(200 + 100 * i);
+            currentPlayer.setY(250);
+        }
+
+        Text rulesLineOne = new Text(0,0,"Use arrow keys to move player side to side");
+        rulesLineOne.setFont(Font.font("Garamond", 30));
+        rulesLineOne.setFill(Color.WHITE);
+        splashScreen.getChildren().add(rulesLineOne);
+        rulesLineOne.setX(110);
+        rulesLineOne.setY(400);
+
+        Text rulesLineTwo = new Text(0,0,"Use mouse to control shot and click to release");
+        rulesLineTwo.setFont(Font.font("Garamond", 30));
+        rulesLineTwo.setFill(Color.WHITE);
+        splashScreen.getChildren().add(rulesLineTwo);
+        rulesLineTwo.setX(90);
+        rulesLineTwo.setY(500);
+
+        Text rulesLineThree = new Text(0,0,"Break blocks to score 21 points before time runs out!");
+        rulesLineThree.setFont(Font.font("Garamond", 30));
+        rulesLineThree.setFill(Color.WHITE);
+        splashScreen.getChildren().add(rulesLineThree);
+        rulesLineThree.setX(50);
+        rulesLineThree.setY(600);
 
         var ballImage = new Image(this.getClass().getClassLoader().getResourceAsStream(BALL_IMAGE));
         myBall = new Ball(ballImage, 50, 50);
@@ -116,7 +170,7 @@ public class BracketBuster extends Application {
                 myBall.resetBall();
             }
 
-            root.handleBlockCollision(myBall, activePowerUps);
+            root.handleBlockCollision(myBall, activePowerUps, myPlayer);
 
             myBall.setX(myBall.getX() + myBall.getSpeed() * myBall.getDirectionX() * elapsedTime);
             myBall.setY(myBall.getY() + myBall.getSpeed() * myBall.getDirectionY() * elapsedTime);
@@ -139,6 +193,11 @@ public class BracketBuster extends Application {
     }
 
     private void handleSplashScreenMouseInput(double mouseX, double mouseY) {
+        for(Player p : playerList) {
+            if(p.contains(mouseX, mouseY)) {
+                myPlayer = p;
+            }
+        }
         root = levelList.get(0);
         switchLevel(root);
     }

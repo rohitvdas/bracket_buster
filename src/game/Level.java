@@ -161,7 +161,7 @@ public class Level extends AnchorPane {
         }
     }
 
-    public void handleBlockCollision(Ball myBall, ArrayList<PowerUp> myActivePowerUps) {
+    public void handleBlockCollision(Ball myBall, ArrayList<PowerUp> myActivePowerUps, Player selectedPlayer) {
         for (int i = 0; i < myBlockGrid.size(); i++) {
             for (int j = 0; j < myBlockGrid.get(0).size(); j++) {
                 Block currentBlock = myBlockGrid.get(i).get(j);
@@ -178,7 +178,7 @@ public class Level extends AnchorPane {
                         myBall.setDirectionY(myBall.getDirectionY() * -1);
                     }
                     if (currentBlock.containsPowerUp()) {
-                        this.dropPowerUp(currentBlock.getX(), currentBlock.getY(), myActivePowerUps);
+                        this.dropPowerUp(currentBlock.getX(), currentBlock.getY(), myActivePowerUps, selectedPlayer);
                     }
                     myBlockGrid.get(i).set(j, null);
                     this.getChildren().remove(currentBlock);
@@ -188,15 +188,14 @@ public class Level extends AnchorPane {
         }
     }
 
-    private void dropPowerUp(double x, double y, ArrayList<PowerUp> myActivePowerUps) {
+    private void dropPowerUp(double x, double y, ArrayList<PowerUp> myActivePowerUps, Player selectedPlayer) {
         PowerUp powerUp;
         if(currentPowerUp == 1) {
             powerUp = new PowerUp(new Image(this.getClass().getClassLoader().getResourceAsStream("and1.jpg")),
                     1,0,0);
             currentPowerUp++;
         } else if(currentPowerUp == 2){
-            powerUp = new PowerUp(new Image(this.getClass().getClassLoader().getResourceAsStream("zion.jpg")),
-                    0,1,0); //change to selected player
+            powerUp = new PowerUp(selectedPlayer.getImage(), 0,1,0);
             currentPowerUp++;
         } else {
             powerUp = new PowerUp(new Image(this.getClass().getClassLoader().getResourceAsStream("clock.png")),
