@@ -3,16 +3,18 @@ package game;
 import static game.BracketBuster.SECOND_DELAY;
 
 public class GameManager {
-    private int level;
-    private Player myPlayer;
+    public static final int TOTAL_TIME = 60;
+    public static final int TOTAL_LIVES = 3;
+
     private double timeLeft;
     private int score;
     private int numLives;
-    private boolean frozen = false;
+    private boolean frozen;
 
     GameManager() {
-        timeLeft = 60;
-        numLives = 3;
+        timeLeft = TOTAL_TIME;
+        numLives = TOTAL_LIVES;
+        frozen = false;
     }
 
     public double getTimeLeft() {

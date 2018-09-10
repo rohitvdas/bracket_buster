@@ -4,21 +4,23 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 public class PowerUp extends ImageView {
-    private double speed = 100;
+    public static final int POWER_UP_SPEED = 100;
+    public static final int POWER_UP_SIZE = 50;
+
     private int addedPoints;
     private int addedLives;
     private int addedTime;
 
-    PowerUp(Image image, int width, int height, int pointsToAdd, int livesToAdd, int timeToAdd) {
+    PowerUp(Image image, int pointsToAdd, int livesToAdd, int timeToAdd) {
         super(image);
-        this.setFitWidth(width);
-        this.setFitHeight(height);
+        this.setFitWidth(POWER_UP_SIZE);
+        this.setFitHeight(POWER_UP_SIZE);
         addedPoints = pointsToAdd;
         addedLives = livesToAdd;
         addedTime = timeToAdd;
     }
 
-    public double getSpeed() { return speed; }
+    public double getSpeed() { return POWER_UP_SPEED; }
 
     public int addPoints() {
         return addedPoints;

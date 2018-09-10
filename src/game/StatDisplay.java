@@ -1,7 +1,6 @@
 package game;
 
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
@@ -10,12 +9,12 @@ import javafx.scene.text.Text;
 
 
 public class StatDisplay extends AnchorPane {
-    Text topLeft, bottomLeft, topRight, bottomRight;
+    private Text topLeft, bottomLeft, topRight, bottomRight;
 
-    StatDisplay(double width, double height) {
+    StatDisplay(double width, double height, String levelName) {
         super();
         Rectangle box = new Rectangle(width, height, Paint.valueOf("BLUE"));
-        topLeft = new Text(0, 0, "");
+        topLeft = new Text(0, 0, levelName);
         topLeft.setFont(Font.font("Garamond", 20));
         topLeft.setFill(Color.WHITE);
         bottomLeft = new Text(0, 0, "Lives: 3");
